@@ -1,4 +1,5 @@
 const accountModel = require('../models/accountModel');
+const httpHelper = require('../helpers/httpHelper');
 
 
 // Define the balance endpoint
@@ -7,9 +8,9 @@ function getBalance(req, res) {
     const balance = accountModel.getBalance(accountId);
 
     if (balance === null) {
-        res.status(404).send(`404 0`);
+        httpHelper.sendResponse(res, 404, '404 0');
     } else {
-        res.status(200).send(`200 ${balance.toString()}`);
+        httpHelper.sendResponse(res, 200, `200 ${balance.toString()}`);
     }
 }
 

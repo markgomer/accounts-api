@@ -1,4 +1,5 @@
 const accountModel = require('../models/accountModel');
+const httpHelper = require('../helpers/httpHelper');
 
 function handleEvent(req, res) {
     const { type, destination, origin, amount } = req.body;
@@ -9,32 +10,32 @@ function handleEvent(req, res) {
         case 'deposit':
             const newBalance = accountModel.deposit(destination, amount);
             response = { destination: { id: destination, balance: newBalance } };
-            res.status(201).send(`201 ${JSON.stringify(response)}`);
+            httpHelper.sendResponse(res, 201, `201 ${JSON.stringify(response)}`);
             break;
-
+            
         case 'withdraw':
             const balance = accountModel.withdraw(origin, amount);
             // insufficient funds or non-existing account
-            if (balance === null) { 
-                res.status(404).send(`404 0`);
+            if (balance === null) {    
+                httpHelper.sendResponse(res, 404, `404 0`);
                 return;
             }
             response = { origin: { id: origin, balance: balance } };
-            res.status(201).send(`201 ${JSON.stringify(response)}`);
+            httpHelper.sendResponse(res, 201, `201 ${JSON.stringify(response)}`);
             break;
-
+            
         case 'transfer':
             const result = accountModel.transfer(origin, destination, amount);
             // non-existing account
             if (result === null) {
-                res.status(404).send(`404 0`);
+                httpHelper.sendResponse(res, 404, `404 0`);
                 return;
             }
             response = {
                 origin: { id: origin, balance: result.originBalance },
                 destination: { id: destination, balance: result.destinationBalance }
             };
-            res.status(201).send(`201 ${JSON.stringify(response)}`);
+            httpHelper.sendResponse(res, 201, `201 ${JSON.stringify(response)}`);
             break;
     }
 }
