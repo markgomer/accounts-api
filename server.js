@@ -19,6 +19,20 @@ app.post('/reset', (req, res) => {
 });
 
 
+// Define the balance endpoint
+app.get('/balance', (req, res) => {
+    const accountId = req.query.account_id;
+    const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'db.json')));
+    const account = data.accounts.find(acc => acc.id === accountId);
+
+    if (!account) {
+        res.status(404).send('404 0');
+    } else {
+        res.status(200).send(`200 ${account.balance.toString()}`);
+    }
+});
+
+
 // Define a route for HTTP GET requests to the root URL '/'
 app.get('/', (req, res) => {
     res.send('GET WORKED!');
